@@ -1,36 +1,33 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
+import 'package:expressions/expressions.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Calculator(),
+      home: ScientificCalculator(),
     );
   }
 }
 
-class Calculator extends StatefulWidget {
+class ScientificCalculator extends StatefulWidget {
   @override
-  // ignore: library_private_types_in_public_api
-  _CalculatorState createState() => _CalculatorState();
+  _ScientificCalculatorState createState() => _ScientificCalculatorState();
 }
 
-class _CalculatorState extends State<Calculator> {
+class _ScientificCalculatorState extends State<ScientificCalculator> {
   final TextEditingController _controller = TextEditingController();
   String _result = '';
 
   void _evaluateExpression() {
     try {
       final expression = Expression.parse(_controller.text);
-      const evaluator = ExpressionEvaluator();
+      final evaluator = const ExpressionEvaluator();
       final result = evaluator.eval(expression, {});
 
       setState(() {
@@ -70,11 +67,47 @@ class _CalculatorState extends State<Calculator> {
     }
   }
 
+  void _calculateLogarithm() {
+    final number = double.tryParse(_controller.text);
+    if (number != null && number > 0) {
+      final result = log(number);
+      setState(() {
+        _result = 'Log($number): ${result.toStringAsFixed(5)}';
+      });
+    } else {
+      setState(() {
+        _result = 'Por favor, digite um número positivo válido';
+      });
+    }
+  }
+
+  void _calculateExponentiation() {
+    final parts = _controller.text.split('^');
+    if (parts.length == 2) {
+      final base = double.tryParse(parts[0]);
+      final exponent = double.tryParse(parts[1]);
+      if (base != null && exponent != null) {
+        final result = pow(base, exponent);
+        setState(() {
+          _result = 'Resultado: ${result.toStringAsFixed(5)}';
+        });
+      } else {
+        setState(() {
+          _result = 'Por favor, digite uma expressão válida';
+        });
+      }
+    } else {
+      setState(() {
+        _result = 'Por favor, digite uma expressão no formato base^expoente';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Calculos Trigonométricos'),
+        title: Text('Calculadora Científica'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -83,52 +116,55 @@ class _CalculatorState extends State<Calculator> {
           children: [
             TextField(
               controller: _controller,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Digite a expressão ou número',
               ),
               keyboardType: TextInputType.number,
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   onPressed: _evaluateExpression,
-                  child: const Text('Calcular'),
+                  child: Text('Calcular'),
                 ),
                 ElevatedButton(
                   onPressed: () => _calculateTrigFunction('sin'),
-                  child: const Text('Seno'),
+                  child: Text('Seno'),
                 ),
                 ElevatedButton(
                   onPressed: () => _calculateTrigFunction('cos'),
-                  child: const Text('Cosseno'),
+                  child: Text('Cosseno'),
                 ),
                 ElevatedButton(
                   onPressed: () => _calculateTrigFunction('tan'),
-                  child: const Text('Tangente'),
+                  child: Text('Tangente'),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: _calculateExponentiation,
+                  child: Text('Expoente'),
+                ),
+                ElevatedButton(
+                  onPressed: _calculateLogarithm,
+                  child: Text('Logaritmo'),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
             Text(
               'Resultado: $_result',
-              style: const TextStyle(fontSize: 24),
+              style: TextStyle(fontSize: 24),
             ),
           ],
         ),
       ),
     );
   }
-}
-
-class ExpressionEvaluator {
-  const ExpressionEvaluator();
-
-  eval(expression, Map map) {}
-}
-
-class Expression {
-  static parse(String text) {}
 }
