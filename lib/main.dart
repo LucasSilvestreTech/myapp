@@ -7,6 +7,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,6 +19,7 @@ class MyApp extends StatelessWidget {
 
 class Calculator extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _CalculatorState createState() => _CalculatorState();
 }
 
@@ -27,7 +30,7 @@ class _CalculatorState extends State<Calculator> {
   void _evaluateExpression() {
     try {
       final expression = Expression.parse(_controller.text);
-      final evaluator = const ExpressionEvaluator();
+      const evaluator = ExpressionEvaluator();
       final result = evaluator.eval(expression, {});
 
       setState(() {
@@ -71,7 +74,7 @@ class _CalculatorState extends State<Calculator> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Calculos Trigonométricos'),
+        title: const Text('Calculos Trigonométricos'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -80,38 +83,38 @@ class _CalculatorState extends State<Calculator> {
           children: [
             TextField(
               controller: _controller,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Digite a expressão ou número',
               ),
               keyboardType: TextInputType.number,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   onPressed: _evaluateExpression,
-                  child: Text('Calcular'),
+                  child: const Text('Calcular'),
                 ),
                 ElevatedButton(
                   onPressed: () => _calculateTrigFunction('sin'),
-                  child: Text('Seno'),
+                  child: const Text('Seno'),
                 ),
                 ElevatedButton(
                   onPressed: () => _calculateTrigFunction('cos'),
-                  child: Text('Cosseno'),
+                  child: const Text('Cosseno'),
                 ),
                 ElevatedButton(
                   onPressed: () => _calculateTrigFunction('tan'),
-                  child: Text('Tangente'),
+                  child: const Text('Tangente'),
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               'Resultado: $_result',
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
             ),
           ],
         ),
@@ -122,7 +125,7 @@ class _CalculatorState extends State<Calculator> {
 
 class ExpressionEvaluator {
   const ExpressionEvaluator();
-  
+
   eval(expression, Map map) {}
 }
 
